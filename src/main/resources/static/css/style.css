@@ -1,0 +1,674 @@
+/*
+ * Tema global do Controle de Eventos: âmbar sobre fundo branco.
+ * Carregado por TODAS as páginas (as folhas por página só ajustam o layout).
+ *
+ * Autor: Felipe Alves
+ */
+
+/* ---------- Paleta e medidas ---------- */
+:root {
+    --ambar-50: #fffbeb;
+    --ambar-100: #fef3c7;
+    --ambar-200: #fde68a;
+    --ambar-300: #fcd34d;
+    --ambar-400: #fbbf24;
+    --ambar-500: #f59e0b;
+    --ambar-600: #d97706;
+    --ambar-700: #b45309;
+    --ambar-800: #92400e;
+
+    --fundo: #ffffff;
+    --texto: #3a2a12;
+    --texto-suave: #7d6a49;
+    --texto-sobre-ambar: #4a2a02;
+    --borda: #f4e6c2;
+    --borda-forte: #e8cf8e;
+
+    --perigo-fundo: #ffe9e3;
+    --perigo-texto: #b3261e;
+    --perigo-forte: #d9402f;
+    --sucesso-fundo: #eaf6dc;
+    --sucesso-texto: #3f6212;
+
+    --sombra-suave: 0 10px 30px rgba(180, 110, 10, .10);
+    --sombra-forte: 0 20px 44px rgba(217, 119, 6, .24);
+    --brilho: 0 8px 22px rgba(245, 158, 11, .45);
+    --raio: 14px;
+    --suave: .28s cubic-bezier(.2, .7, .2, 1);
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--texto);
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, system-ui, sans-serif;
+    line-height: 1.5;
+    background:
+        radial-gradient(900px 420px at 96% -8%, rgba(251, 191, 36, .26), transparent 62%),
+        radial-gradient(760px 380px at -8% 4%, rgba(253, 230, 138, .40), transparent 58%),
+        radial-gradient(700px 400px at 50% 120%, rgba(251, 191, 36, .14), transparent 60%),
+        var(--fundo);
+    background-attachment: fixed;
+}
+
+h1, h2, h3 { font-weight: 800; letter-spacing: -.01em; color: var(--texto); }
+h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.5rem); }
+
+a { color: var(--ambar-700); transition: color var(--suave); }
+a:hover { color: var(--ambar-600); }
+
+::selection { background: var(--ambar-200); color: var(--texto); }
+
+:focus-visible {
+    outline: 3px solid var(--ambar-400);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+@keyframes subir {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes entrar {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulsar {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, .45); }
+    50%      { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+}
+
+/* Páginas: mesma largura e entrada suave */
+.pagina-listagem, .pagina-participantes, .pagina-inscricoes, .pagina-inscritos,
+.pagina-painel, .pagina-catalogo, .pagina-meus-eventos {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 44px 0 56px;
+    animation: subir .55s var(--suave) both;
+}
+
+/* ---------- Barra de navegação ---------- */
+.barra-topo {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 22px;
+    padding: 12px clamp(16px, 4vw, 40px);
+    background: rgba(255, 255, 255, .88);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--borda);
+    box-shadow: 0 6px 24px rgba(217, 119, 6, .08);
+}
+.barra-topo::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--ambar-400), var(--ambar-600), var(--ambar-400), transparent);
+    opacity: .75;
+}
+
+.marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ambar-800);
+    font-size: 1.08rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+.marca-icone, .login-icone {
+    display: grid;
+    place-items: center;
+    width: 36px; height: 36px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, var(--ambar-300), var(--ambar-500));
+    color: var(--texto-sobre-ambar);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, .4);
+    transition: transform var(--suave), box-shadow var(--suave);
+}
+.marca-icone svg, .login-icone svg { width: 20px; height: 20px; }
+.marca:hover { color: var(--ambar-700); }
+.marca:hover .marca-icone { transform: rotate(-10deg) scale(1.1); box-shadow: var(--brilho); }
+
+.barra-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.barra-links a {
+    padding: 8px 15px;
+    border-radius: 999px;
+    color: var(--texto);
+    font-size: .93rem;
+    font-weight: 700;
+    text-decoration: none;
+    background: linear-gradient(var(--ambar-100), var(--ambar-100)) no-repeat left center / 0% 100%;
+    transition: background-size var(--suave), color var(--suave), transform var(--suave), box-shadow var(--suave);
+}
+.barra-links a:hover {
+    background-size: 100% 100%;
+    color: var(--ambar-800);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(245, 158, 11, .2);
+}
+.barra-links a.ativo {
+    background: linear-gradient(var(--ambar-200), var(--ambar-200)) no-repeat left center / 100% 100%;
+    color: var(--ambar-800);
+}
+
+.barra-usuario { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.barra-usuario form { margin: 0; }
+.barra-email {
+    max-width: 230px;
+    overflow: hidden;
+    padding: 6px 12px;
+    border: 1px solid var(--borda);
+    border-radius: 999px;
+    background: var(--ambar-50);
+    color: var(--texto-suave);
+    font-size: .82rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: border-color var(--suave), background var(--suave);
+}
+.barra-email:hover { border-color: var(--ambar-400); background: var(--ambar-100); }
+
+/* ---------- Botões ---------- */
+button, .botao, .botao-novo, .botao-acao, .acao, .botao-secundario {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    overflow: hidden;
+    padding: 11px 20px;
+    border: 0;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform var(--suave), box-shadow var(--suave), background var(--suave), color var(--suave), border-color var(--suave);
+}
+/* brilho que varre o botão no hover */
+button::after, .botao::after, .botao-novo::after, .botao-acao::after, .acao::after, .botao-secundario::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .6) 50%, transparent 70%);
+    transform: translateX(-130%);
+    transition: transform .65s ease;
+    pointer-events: none;
+}
+button:hover::after, .botao:hover::after, .botao-novo:hover::after, .botao-acao:hover::after,
+.acao:hover::after, .botao-secundario:hover::after { transform: translateX(130%); }
+
+/* primário: âmbar */
+button, .botao, .botao-novo {
+    background: linear-gradient(135deg, var(--ambar-300), var(--ambar-500));
+    color: var(--texto-sobre-ambar);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, .32);
+}
+button:hover, .botao:hover, .botao-novo:hover {
+    background: linear-gradient(135deg, var(--ambar-400), var(--ambar-600));
+    color: #3a1f00;
+    transform: translateY(-3px);
+    box-shadow: var(--brilho);
+}
+button:active, .botao:active, .botao-novo:active, .botao-acao:active, .acao:active {
+    transform: translateY(0) scale(.97);
+    box-shadow: 0 2px 6px rgba(245, 158, 11, .3);
+}
+
+/* ações pequenas dentro das tabelas */
+.botao-acao, .acao { padding: 8px 13px; font-size: .82rem; box-shadow: none; }
+.editar {
+    background: var(--ambar-100);
+    color: var(--ambar-800);
+}
+.editar:hover {
+    background: var(--ambar-400);
+    color: var(--texto-sobre-ambar);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(245, 158, 11, .35);
+}
+.inscritos {
+    background: #ffedd5;
+    color: #9a3412;
+}
+.inscritos:hover {
+    background: #fb923c;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(234, 88, 12, .32);
+}
+.excluir, .cancelar {
+    background: var(--perigo-fundo);
+    color: var(--perigo-texto);
+    box-shadow: none;
+}
+.excluir:hover, .cancelar:hover {
+    background: var(--perigo-forte);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(217, 64, 47, .35);
+}
+.botao.excluir, .botao.cancelar { padding: 8px 13px; font-size: .82rem; }
+
+/* secundário: contorno */
+.botao-secundario {
+    background: transparent;
+    border: 2px solid var(--borda-forte);
+    color: var(--ambar-800);
+    box-shadow: none;
+}
+.botao-secundario:hover {
+    background: var(--ambar-50);
+    border-color: var(--ambar-500);
+    color: var(--ambar-700);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(245, 158, 11, .2);
+}
+
+/* sair (na barra) */
+.botao-sair {
+    padding: 7px 15px;
+    font-size: .85rem;
+    background: transparent;
+    border: 2px solid var(--borda-forte);
+    color: var(--ambar-800);
+    box-shadow: none;
+}
+.botao-sair:hover {
+    background: var(--perigo-forte);
+    border-color: var(--perigo-forte);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(217, 64, 47, .3);
+}
+
+/* ---------- Cabeçalho de página ---------- */
+.cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 8px;
+    color: var(--ambar-700);
+    font-size: .8rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+.eyebrow::before {
+    content: "";
+    width: 26px; height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--ambar-400), var(--ambar-600));
+    transition: width var(--suave);
+}
+.cabecalho:hover .eyebrow::before { width: 44px; }
+.subtitulo { margin: 8px 0 0; color: var(--texto-suave); }
+
+.voltar {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+    color: var(--ambar-700);
+    font-size: .9rem;
+    font-weight: 800;
+    text-decoration: none;
+    background: linear-gradient(var(--ambar-500), var(--ambar-500)) no-repeat left bottom / 0% 2px;
+    transition: background-size var(--suave), color var(--suave), transform var(--suave);
+}
+.voltar:hover { background-size: 100% 2px; color: var(--ambar-800); transform: translateX(-4px); }
+
+/* ---------- Cartões e tabelas ---------- */
+.cartao-lista, .estado-vazio, .vazio {
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-suave);
+    transition: box-shadow var(--suave), border-color var(--suave);
+}
+.cartao-lista:hover { border-color: var(--borda-forte); box-shadow: 0 16px 38px rgba(217, 119, 6, .16); }
+
+.tabela-responsiva { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 17px 20px; border-bottom: 1px solid var(--borda); text-align: left; }
+th {
+    background: var(--ambar-50);
+    color: var(--ambar-800);
+    font-size: .75rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr { animation: entrar .5s var(--suave) both; transition: background var(--suave); }
+tbody tr:nth-child(2) { animation-delay: .05s; }
+tbody tr:nth-child(3) { animation-delay: .10s; }
+tbody tr:nth-child(4) { animation-delay: .15s; }
+tbody tr:nth-child(5) { animation-delay: .20s; }
+tbody tr:nth-child(n+6) { animation-delay: .25s; }
+tbody tr:hover { background: linear-gradient(90deg, var(--ambar-100), #fffdf6 75%); }
+tbody td:first-child { transition: box-shadow var(--suave), padding-left var(--suave); }
+tbody tr:hover td:first-child { box-shadow: inset 5px 0 0 var(--ambar-500); padding-left: 25px; }
+
+.titulo-evento, .nome-participante, .nome-evento { font-weight: 800; }
+.coluna-acoes, .acoes-tabela { text-align: right; }
+.acoes-tabela { display: flex; justify-content: flex-end; gap: 8px; }
+.acoes-evento { display: flex; flex-wrap: wrap; gap: 8px; min-width: 245px; }
+.acoes-evento form, .acoes-tabela form, td form { margin: 0; display: inline; }
+
+/* selos e contadores */
+.vagas, .selo {
+    display: inline-block;
+    min-width: 32px;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: var(--ambar-100);
+    color: var(--ambar-800);
+    font-size: .82rem;
+    font-weight: 800;
+    text-align: center;
+    transition: transform var(--suave), background var(--suave), box-shadow var(--suave);
+}
+.vagas:hover, .selo:hover { transform: scale(1.12); background: var(--ambar-300); box-shadow: 0 4px 10px rgba(245, 158, 11, .35); }
+.selo-ativa { background: var(--sucesso-fundo); color: var(--sucesso-texto); }
+.selo-ativa:hover { background: #cfe9b0; box-shadow: 0 4px 10px rgba(101, 163, 13, .3); }
+.selo-cancelada { background: var(--perigo-fundo); color: var(--perigo-texto); }
+.selo-cancelada:hover { background: #ffcfc4; box-shadow: 0 4px 10px rgba(217, 64, 47, .25); }
+.texto-suave { color: var(--texto-suave); font-size: .85rem; }
+
+/* estados vazios */
+.estado-vazio, .vazio { padding: 58px 24px; text-align: center; }
+.estado-vazio h2, .vazio h2 { margin: 0 0 8px; }
+.estado-vazio p, .vazio p { margin: 0 0 24px; color: var(--texto-suave); }
+.vazio p:last-child { margin-bottom: 0; }
+
+/* links de navegação do rodapé das listas */
+.navegacao { display: flex; justify-content: center; gap: 20px; margin-top: 24px; }
+.navegacao a {
+    padding: 6px 4px;
+    color: var(--texto-suave);
+    font-size: .9rem;
+    font-weight: 800;
+    text-decoration: none;
+    background: linear-gradient(var(--ambar-500), var(--ambar-500)) no-repeat left bottom / 0% 2px;
+    transition: background-size var(--suave), color var(--suave);
+}
+.navegacao a:hover { color: var(--ambar-700); background-size: 100% 2px; }
+.pagina-listagem > a.botao, .pagina-participantes > a.botao { margin-top: 22px; }
+
+/* resumo de vagas (inscritos do evento) */
+.resumo-vagas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 26px; }
+.resumo-vagas div, .cartao-indicador, .cartao-evento {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-suave);
+    transition: transform var(--suave), box-shadow var(--suave), border-color var(--suave);
+}
+.resumo-vagas div { display: grid; gap: 8px; padding: 20px; }
+.resumo-vagas span { color: var(--texto-suave); font-size: .9rem; }
+.resumo-vagas strong { color: var(--ambar-600); font-size: 1.9rem; transition: transform var(--suave); transform-origin: left; }
+.resumo-vagas div:hover, .cartao-indicador:hover, .cartao-evento:hover {
+    transform: translateY(-6px);
+    border-color: var(--ambar-300);
+    box-shadow: var(--sombra-forte);
+}
+.resumo-vagas div:hover strong { transform: scale(1.14); }
+
+/* ---------- Formulários ---------- */
+.pagina-cadastro, .pagina-inscricao, .pagina-participante {
+    display: grid;
+    min-height: calc(100vh - 64px);
+    padding: 40px 20px;
+    place-items: center;
+}
+.cartao-cadastro, .cartao-inscricao, .cartao-participante, .login-caixa, .cadastro-container {
+    position: relative;
+    overflow: hidden;
+    padding: 38px;
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(217, 119, 6, .14);
+    animation: subir .6s var(--suave) both;
+    transition: box-shadow var(--suave), border-color var(--suave);
+}
+.cartao-cadastro::before, .cartao-inscricao::before, .cartao-participante::before,
+.login-caixa::before, .cadastro-container::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--ambar-300), var(--ambar-500), var(--ambar-300));
+}
+.cartao-cadastro:hover, .cartao-inscricao:hover, .cartao-participante:hover,
+.login-caixa:hover, .cadastro-container:hover {
+    border-color: var(--borda-forte);
+    box-shadow: 0 26px 56px rgba(217, 119, 6, .22);
+}
+.cartao-cadastro h1, .cartao-inscricao h1, .cartao-participante h1 { margin: 18px 0 8px; font-size: clamp(1.75rem, 4vw, 2.25rem); }
+.cartao-cadastro .subtitulo, .cartao-inscricao .subtitulo, .cartao-participante .subtitulo { margin: 0 0 28px; }
+
+.cartao-cadastro form, .cartao-inscricao form, .cartao-participante form,
+.login-caixa form, .cadastro-container form { display: grid; gap: 20px; }
+.linha-campos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.campo { display: grid; gap: 7px; align-content: start; }
+label { font-size: .9rem; font-weight: 800; color: var(--texto); }
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--borda);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--texto);
+    font: inherit;
+    outline: none;
+    transition: border-color var(--suave), box-shadow var(--suave), background var(--suave), transform var(--suave);
+}
+textarea { min-height: 112px; resize: vertical; }
+input::placeholder, textarea::placeholder { color: #b9a77f; }
+input:hover, textarea:hover, select:hover { border-color: var(--ambar-300); background: var(--ambar-50); }
+input:focus, textarea:focus, select:focus {
+    border-color: var(--ambar-500);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, .22);
+    transform: translateY(-1px);
+}
+select { cursor: pointer; }
+
+.erro { min-height: 1em; color: var(--perigo-texto); font-size: .8rem; font-weight: 700; }
+.acoes-formulario { display: flex; justify-content: flex-end; gap: 12px; }
+.cartao-cadastro form > button { justify-self: end; }
+
+/* mensagens */
+.mensagem-erro, .mensagem-sucesso {
+    margin: 0 0 20px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    animation: entrar .45s var(--suave) both;
+    transition: transform var(--suave), box-shadow var(--suave);
+}
+.mensagem-erro { background: var(--perigo-fundo); border-left: 5px solid var(--perigo-forte); color: #8f1d14; }
+.mensagem-sucesso { background: var(--sucesso-fundo); border-left: 5px solid #65a30d; color: var(--sucesso-texto); }
+.mensagem-erro:hover, .mensagem-sucesso:hover { transform: translateX(4px); box-shadow: 0 6px 16px rgba(0, 0, 0, .08); }
+body > .mensagem-erro { width: min(650px, calc(100% - 40px)); margin: 20px auto 0; }
+
+/* ---------- Login e cadastro público ---------- */
+.login-caixa { max-width: 430px; margin: clamp(32px, 9vh, 90px) auto; }
+.cadastro-container { max-width: 650px; margin: clamp(24px, 6vh, 60px) auto; }
+.login-icone { margin-bottom: 14px; width: 46px; height: 46px; border-radius: 14px; }
+.login-icone svg { width: 26px; height: 26px; }
+.login-caixa h1, .cadastro-container h1 { font-size: clamp(1.6rem, 4vw, 2rem); margin-bottom: 4px; }
+.login-caixa > p, .cadastro-container > p { color: var(--texto-suave); margin: 0 0 18px; }
+.login-caixa form button, .cadastro-container form button { margin-top: 8px; width: 100%; }
+.login-caixa p.link-extra, .cadastro-container p.link-extra { margin: 18px 0 0; text-align: center; color: var(--texto-suave); }
+.link-extra a { font-weight: 800; text-decoration: none; background: linear-gradient(var(--ambar-500), var(--ambar-500)) no-repeat left bottom / 0% 2px; transition: background-size var(--suave), color var(--suave); }
+.link-extra a:hover { background-size: 100% 2px; }
+
+/* ---------- Painel (dashboard) ---------- */
+.painel-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 30px; }
+.cartao-indicador { display: grid; gap: 6px; padding: 24px 22px; }
+.cartao-indicador::after {
+    content: "";
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--ambar-200), transparent 70%);
+    opacity: .6;
+    transition: transform .5s ease, opacity var(--suave);
+}
+.cartao-indicador:hover::after { transform: scale(1.6); opacity: 1; }
+.cartao-indicador span { position: relative; z-index: 1; color: var(--texto-suave); font-size: .88rem; font-weight: 700; }
+.cartao-indicador strong { position: relative; z-index: 1; color: var(--ambar-600); font-size: 2.6rem; line-height: 1.1; transition: transform var(--suave); transform-origin: left; }
+.cartao-indicador:hover strong { transform: scale(1.12); }
+.cartao-indicador small { position: relative; z-index: 1; color: var(--texto-suave); }
+.acoes-rapidas { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ---------- Catálogo do participante ---------- */
+.grade-eventos { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 22px; }
+.cartao-evento { display: flex; flex-direction: column; gap: 12px; padding: 26px 24px 22px; animation: subir .55s var(--suave) both; }
+.cartao-evento:nth-child(2) { animation-delay: .07s; }
+.cartao-evento:nth-child(3) { animation-delay: .14s; }
+.cartao-evento:nth-child(n+4) { animation-delay: .2s; }
+.cartao-evento::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--ambar-300), var(--ambar-600));
+    transform: scaleX(.3);
+    transform-origin: left;
+    transition: transform .5s var(--suave);
+}
+.cartao-evento:hover::before { transform: scaleX(1); }
+.cartao-evento h2 { margin: 0; font-size: 1.25rem; }
+.cartao-evento .descricao { margin: 0; color: var(--texto-suave); }
+.detalhes { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 4px 0 6px; font-size: .92rem; }
+.detalhes dt { color: var(--ambar-700); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; align-self: center; }
+.detalhes dd { margin: 0; font-weight: 700; }
+.cartao-evento form { margin-top: auto; }
+.cartao-evento form button { width: 100%; }
+.cartao-evento:hover form button { animation: pulsar 1.4s ease-out infinite; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 760px) {
+    .barra-email { display: none; }
+    .barra-topo { gap: 8px 14px; }
+}
+@media (max-width: 640px) {
+    .pagina-listagem, .pagina-participantes, .pagina-inscricoes, .pagina-inscritos,
+    .pagina-painel, .pagina-catalogo, .pagina-meus-eventos { width: min(100% - 28px, 1180px); padding: 30px 0; }
+    .cabecalho { align-items: flex-start; flex-direction: column; }
+    .cabecalho .botao-novo { width: 100%; }
+    .resumo-vagas { grid-template-columns: 1fr; }
+    .pagina-cadastro, .pagina-inscricao, .pagina-participante { padding: 18px 12px; }
+    .cartao-cadastro, .cartao-inscricao, .cartao-participante, .login-caixa, .cadastro-container { padding: 28px 20px; }
+    .linha-campos { grid-template-columns: 1fr; }
+    .acoes-formulario { flex-direction: column-reverse; }
+    .cartao-cadastro form > button, .acoes-formulario > * { width: 100%; }
+}
+
+/* ---------- Popup de confirmação de exclusão ---------- */
+/* Animações: fundo aparece, caixa sobe com leve zoom, ícone pulsa em vermelho. */
+@keyframes modal-fundo { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-entrar {
+    from { opacity: 0; transform: translateY(18px) scale(.94); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes modal-alerta {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(217, 64, 47, .35); }
+    50%      { box-shadow: 0 0 0 10px rgba(217, 64, 47, 0); }
+}
+
+/* O <dialog> só posiciona (centralizado pelo navegador); o visual fica no .modal-caixa. */
+.modal-confirmar {
+    width: min(440px, calc(100% - 32px));
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--texto);
+    overflow: visible;
+}
+/* ::backdrop = camada escura atrás do popup (desfoque suave). */
+.modal-confirmar::backdrop {
+    background: rgba(58, 42, 18, .5);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    animation: modal-fundo .25s ease both;
+}
+/* Trava a rolagem da página enquanto o popup está aberto. */
+body:has(.modal-confirmar[open]) { overflow: hidden; }
+
+/* Cartão branco com faixa vermelha no topo (cor de perigo do tema). */
+.modal-caixa {
+    position: relative;
+    padding: 34px 28px 26px;
+    border: 1px solid var(--borda);
+    border-top: 5px solid var(--perigo-forte);
+    border-radius: var(--raio);
+    background: #fff;
+    box-shadow: 0 28px 70px rgba(58, 42, 18, .35);
+    text-align: center;
+    animation: modal-entrar .32s var(--suave) both;
+}
+/* Círculo do ícone de alerta. */
+.modal-icone {
+    display: grid;
+    place-items: center;
+    width: 58px; height: 58px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: var(--perigo-fundo);
+    color: var(--perigo-forte);
+    animation: modal-alerta 1.8s ease-in-out infinite;
+}
+.modal-icone svg { width: 28px; height: 28px; }
+.modal-caixa h2 { margin: 0 0 8px; font-size: 1.35rem; }
+.modal-caixa p { margin: 0; color: var(--texto-suave); overflow-wrap: anywhere; }
+
+/* Dois botões lado a lado, mesma largura. */
+.modal-acoes { display: flex; gap: 12px; margin-top: 26px; }
+.modal-acoes > * { flex: 1; }
+
+/* o botão de perigo precisa vencer o estilo âmbar global de "button" */
+/* Botão de perigo: sobrescreve o âmbar global de "button" (classe vence elemento). */
+.modal-excluir {
+    background: linear-gradient(135deg, #ef6a58, var(--perigo-forte));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(217, 64, 47, .35);
+}
+.modal-excluir:hover {
+    background: linear-gradient(135deg, var(--perigo-forte), #b3261e);
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(217, 64, 47, .45);
+}
+
+/* Celular: botões empilhados, Cancelar por último na pilha visual. */
+@media (max-width: 420px) {
+    .modal-acoes { flex-direction: column-reverse; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

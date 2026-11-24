@@ -1,0 +1,6 @@
+# Autor: Felipe Alves
+target/
+nbproject/private/
+.netbeans/
+*.log
+.DS_Store

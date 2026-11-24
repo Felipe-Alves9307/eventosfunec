@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Felipe Alves">
+        <title>Eventos</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="stylesheet" th:href="@{/css/lista-eventos.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments/navbar :: barra('eventos')}"></header>
+        <main class="pagina-listagem">
+            <header class="cabecalho">
+                <div>
+                    <p class="eyebrow">Controle de eventos</p>
+                    <h1>Eventos cadastrados</h1>
+                    <p class="subtitulo">Acompanhe os próximos eventos em um só lugar.</p>
+                </div>
+                <a class="botao-novo" th:href="@{/eventos/novo}">+ Novo evento</a>
+            </header>
+
+            <!--/* ESTUDO: th:if só renderiza a div quando existe "erro"/"sucesso" (flash
+                 enviado pelo controller). role="alert/status" avisa leitores de tela. */-->
+            <div class="mensagem-erro" role="alert" th:if="${erro}" th:text="${erro}"></div>
+            <div class="mensagem-sucesso" role="status" th:if="${sucesso}" th:text="${sucesso}"></div>
+
+            <section class="cartao-lista" th:if="${!#lists.isEmpty(eventos)}">
+                <div class="tabela-responsiva">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Descrição</th>
+                                <th>Data</th>
+                                <th>Horário</th>
+                                <th>Local</th>
+                                <th>Vagas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="evento : ${eventos}">
+                                <td class="titulo-evento" th:text="${evento.titulo}"></td>
+                                <td th:text="${evento.descricao}"></td>
+                                <td th:text="${evento.data}"></td>
+                                <td th:text="${evento.hora}"></td>
+                                <td th:text="${evento.local}"></td>
+                                <td><span class="vagas" th:text="${evento.quantidadeVagas}"></span></td>
+                                <td class="acoes-evento">
+                                    <form th:action="@{/eventos/editar/{id}(id=${evento.id})}" method="get">
+                                        <button class="botao-acao editar" type="submit">Editar</button>
+                                    </form>
+                                    <!--/* ESTUDO: o antigo onsubmit="confirm()" virou data-confirmar.
+                                         O texto do popup vem desse atributo e o script do fragmento
+                                         intercepta o envio do form. */-->
+                                    <form th:action="@{/eventos/excluir/{id}(id=${evento.id})}"
+                                          method="post"
+                                          th:data-confirmar="|Excluir o evento “${evento.titulo}”? Esta ação não pode ser desfeita.|">
+                                        <button class="botao excluir" type="submit">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/eventos/{id}/inscritos(id=${evento.id})}" method="get">
+                                        <button class="botao-acao inscritos" type="submit">Inscritos</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="estado-vazio" th:if="${#lists.isEmpty(eventos)}">
+                <h2>Nenhum evento cadastrado</h2>
+                <p>Comece criando o primeiro evento da sua agenda.</p>
+                <a class="botao-novo" th:href="@{/eventos/novo}">Cadastrar evento</a>
+            </section>
+            <a class="botao" th:href="@{/participantes}">
+                Participantes
+            </a>
+        </main>
+        <!--/* ESTUDO: insere o popup + script uma vez por página. */-->
+        <div th:replace="~{fragments/confirmar-exclusao :: modal}"></div>
+    </body>
+</html>

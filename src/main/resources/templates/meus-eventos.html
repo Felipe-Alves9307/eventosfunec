@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Felipe Alves">
+        <title>Meus eventos</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments/navbar :: barra('meus')}"></header>
+        <main class="pagina-meus-eventos">
+            <header class="cabecalho">
+                <div>
+                    <p class="eyebrow">Área do participante</p>
+                    <h1>Meus eventos</h1>
+                    <p class="subtitulo">Suas inscrições ativas e o histórico de cancelamentos.</p>
+                </div>
+                <a class="botao-novo" th:href="@{/catalogo}">Ver catálogo</a>
+            </header>
+
+            <div class="mensagem-sucesso" th:if="${sucesso}" th:text="${sucesso}"></div>
+            <div class="mensagem-erro" th:if="${erro}" th:text="${erro}"></div>
+
+            <section class="cartao-lista" th:unless="${#lists.isEmpty(inscricoes)}">
+                <div class="tabela-responsiva">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Evento</th>
+                                <th>Data</th>
+                                <th>Local</th>
+                                <th>Inscrição</th>
+                                <th>Situação</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="i : ${inscricoes}">
+                                <td class="nome-evento" th:text="${i.evento.titulo}"></td>
+                                <td th:text="${#temporals.format(i.evento.data, 'dd/MM/yyyy') + ' às ' + #temporals.format(i.evento.hora, 'HH:mm')}"></td>
+                                <td th:text="${i.evento.local}"></td>
+                                <td th:text="${#temporals.format(i.dataInscricao, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td>
+                                    <span class="selo"
+                                          th:classappend="${i.status.name() == 'ATIVA'} ? 'selo-ativa' : 'selo-cancelada'"
+                                          th:text="${i.status.name() == 'ATIVA'} ? 'Ativa' : 'Cancelada'">Ativa</span>
+                                </td>
+                                <td>
+                                    <!-- Esconder o botão não é segurança: o Service valida tudo de novo. -->
+                                    <form th:if="${i.status.name() == 'ATIVA' and i.cancelavel}"
+                                          th:action="@{/minhas-inscricoes/{id}/cancelar(id=${i.id})}"
+                                          method="post"
+                                          onsubmit="return confirm('Cancelar esta inscrição?');">
+                                        <button type="submit" class="botao cancelar">Cancelar inscrição</button>
+                                    </form>
+                                    <span class="texto-suave"
+                                          th:if="${i.status.name() == 'ATIVA' and !i.cancelavel}">Evento já iniciado</span>
+                                    <span class="texto-suave"
+                                          th:if="${i.status.name() == 'CANCELADA'}"
+                                          th:text="${i.dataCancelamento != null} ? ('Cancelada em ' + ${#temporals.format(i.dataCancelamento, 'dd/MM/yyyy HH:mm')}) : 'Cancelada'"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="vazio" th:if="${#lists.isEmpty(inscricoes)}">
+                <h2>Você ainda não possui inscrições</h2>
+                <p>Escolha um evento no catálogo para começar.</p>
+                <a class="botao" th:href="@{/catalogo}">Ver eventos disponíveis</a>
+            </section>
+        </main>
+    </body>
+</html>

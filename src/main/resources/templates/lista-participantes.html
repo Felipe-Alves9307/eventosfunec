@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Felipe Alves">
+        <title>Participantes</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="stylesheet" th:href="@{/css/lista-participantes.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments/navbar :: barra('participantes')}"></header>
+        <main class="pagina-participantes">
+            <div class="cabecalho">
+                <div>
+                    <p class="eyebrow">Controle de eventos</p>
+                    <h1>Participantes cadastrados</h1>
+                    <p class="subtitulo">Gerencie os dados de todos os participantes.</p>
+                </div>
+                <a class="botao-novo" th:href="@{/participantes/novo}">+ Novo participante</a>
+            </div>
+            <!--/* ESTUDO: th:if só renderiza a div quando existe "erro"/"sucesso" (flash
+                 enviado pelo controller). role="alert/status" avisa leitores de tela. */-->
+            <div class="mensagem-erro" role="alert" th:if="${erro}" th:text="${erro}"></div>
+            <div class="mensagem-sucesso" role="status" th:if="${sucesso}" th:text="${sucesso}"></div>
+
+            <section class="cartao-lista" th:unless="${#lists.isEmpty(participantes)}">
+                <div class="tabela-responsiva">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Telefone</th>
+                                <th>CPF</th>
+                                <th class="coluna-acoes">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="participante : ${participantes}">
+                                <td class="nome-participante" th:text="${participante.nome}"></td>
+                                <td th:text="${participante.email}"></td>
+                                <td th:text="${participante.telefone}"></td>
+                                <td th:text="${participante.documento}"></td>
+                                <td class="acoes-tabela">
+                                    <form th:action="@{/participantes/editar/{id}(id=${participante.id})}" method="get">
+                                        <button class="acao editar" type="submit">Editar</button>
+                                    </form>
+                                    <!--/* ESTUDO: data-confirmar define o texto do popup (ver fragments/confirmar-exclusao.html). */-->
+                                    <form th:action="@{/participantes/excluir/{id}(id=${participante.id})}"
+                                          method="post"
+                                          th:data-confirmar="|Excluir o participante “${participante.nome}”? Esta ação não pode ser desfeita.|">
+                                        <button class="botao excluir" type="submit">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section th:if="${#lists.isEmpty(participantes)}" class="vazio">
+                <h2>Nenhum participante cadastrado</h2>
+                <p>Adicione pessoas para manter seus dados organizados.</p>
+                <a class="botao-novo" th:href="@{/participantes/novo}">Cadastrar participante</a>
+            </section>
+            <a class="botao" th:href="@{/eventos}">
+                Eventos
+            </a>
+        </main>
+        <!--/* ESTUDO: insere o popup + script uma vez por página. */-->
+        <div th:replace="~{fragments/confirmar-exclusao :: modal}"></div>
+    </body>
+</html>

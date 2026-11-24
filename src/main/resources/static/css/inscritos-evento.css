@@ -1,0 +1,8 @@
+/*
+ * Layout dos inscritos de um evento. Cores, botões e efeitos: style.css.
+ *
+ * Autor: Felipe Alves
+ */
+.pagina-inscritos { width: min(1080px, calc(100% - 40px)); }
+.pagina-inscritos .cabecalho { margin: 20px 0 28px; }
+table { min-width: 720px; }

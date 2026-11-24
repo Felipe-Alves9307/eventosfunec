@@ -1,0 +1,6 @@
+/*
+ * Layout da nova inscrição (administrador). Cores, campos e efeitos: style.css.
+ *
+ * Autor: Felipe Alves
+ */
+.cartao-inscricao { width: min(100%, 650px); }

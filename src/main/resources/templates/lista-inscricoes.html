@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Felipe Alves">
+        <title>Inscrições</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="stylesheet" th:href="@{/css/lista-inscricoes.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments/navbar :: barra('inscricoes')}"></header>
+        <main class="pagina-inscricoes">
+            <div class="cabecalho">
+                <div>
+                    <p class="eyebrow">Controle de eventos</p>
+                    <h1>Inscrições realizadas</h1>
+                    <p class="subtitulo">Participantes vinculados aos eventos.</p>
+                </div>
+                <a class="botao-novo" th:href="@{/inscricoes/nova}">+ Nova inscrição</a>
+            </div>
+            <section class="cartao-lista" th:unless="${#lists.isEmpty(inscricoes)}">
+                <div class="tabela-responsiva">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Evento</th>
+                                <th>Participante</th>
+                                <th>Data da inscrição</th>
+                                <th>Situação</th>
+                                <th class="coluna-acoes">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="inscricao : ${inscricoes}">
+                                <td class="nome-evento" th:text="${inscricao.evento.titulo}"></td>
+                                <td th:text="${inscricao.participante.nome}"></td>
+                                <td th:text="${#temporals.format(inscricao.dataInscricao, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td>
+                                    <span class="selo"
+                                          th:classappend="${inscricao.status.name() == 'ATIVA'} ? 'selo-ativa' : 'selo-cancelada'"
+                                          th:text="${inscricao.status.name() == 'ATIVA'} ? 'Ativa' : 'Cancelada'"
+                                          th:title="${inscricao.dataCancelamento != null} ? ('Cancelada em ' + ${#temporals.format(inscricao.dataCancelamento, 'dd/MM/yyyy HH:mm')})">Ativa</span>
+                                </td>
+                                <td class="acoes-tabela">
+                                    <form th:action="@{/inscricoes/excluir/{id}(id=${inscricao.id})}"
+                                          method="post"
+                                          onsubmit="return confirm('Excluir inscrição?');">
+                                        <button class="botao excluir" type="submit">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section th:if="${#lists.isEmpty(inscricoes)}" class="vazio">
+                <h2>Nenhuma inscrição cadastrada</h2>
+                <p>Crie a primeira inscrição para vincular participantes aos eventos.</p>
+                <a class="botao-novo" th:href="@{/inscricoes/nova}">Nova inscrição</a>
+            </section>
+            <nav class="navegacao">
+                <a th:href="@{/eventos}">Eventos</a>
+                <a th:href="@{/participantes}">Participantes</a>
+            </nav>
+        </main>
+    </body>
+</html>

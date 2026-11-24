@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Felipe Alves">
+        <title>Barra de navegação</title>
+    </head>
+    <body>
+        <!-- Uso: <header th:replace="~{fragments/navbar :: barra('eventos')}"></header> -->
+        <header class="barra-topo" th:fragment="barra(ativo)">
+            <a class="marca" th:href="@{/}">
+                <span class="marca-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span>
+                <span>Controle de Eventos</span>
+            </a>
+            <nav class="barra-links">
+                <th:block th:if="${navAdmin}">
+                    <a th:href="@{/}" th:classappend="${ativo == 'painel'} ? 'ativo'">Painel</a>
+                    <a th:href="@{/eventos}" th:classappend="${ativo == 'eventos'} ? 'ativo'">Eventos</a>
+                    <a th:href="@{/participantes}" th:classappend="${ativo == 'participantes'} ? 'ativo'">Participantes</a>
+                    <a th:href="@{/inscricoes}" th:classappend="${ativo == 'inscricoes'} ? 'ativo'">Inscrições</a>
+                </th:block>
+                <th:block th:if="${navParticipante}">
+                    <a th:href="@{/catalogo}" th:classappend="${ativo == 'catalogo'} ? 'ativo'">Catálogo</a>
+                    <a th:href="@{/meus-eventos}" th:classappend="${ativo == 'meus'} ? 'ativo'">Meus eventos</a>
+                </th:block>
+            </nav>
+            <div class="barra-usuario" th:if="${navEmail}">
+                <span class="barra-email" th:text="${navEmail}">usuario@exemplo.com</span>
+                <form th:action="@{/logout}" method="post">
+                    <button class="botao-sair" type="submit">Sair</button>
+                </form>
+            </div>
+        </header>
+    </body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Felipe Alves">
+        <title>Painel - Controle de Eventos</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments/navbar :: barra('painel')}"></header>
+        <main class="pagina-painel">
+            <header class="cabecalho">
+                <div>
+                    <p class="eyebrow">Painel administrativo</p>
+                    <h1>Visão geral</h1>
+                    <p class="subtitulo">Acompanhe os números do sistema em um só lugar.</p>
+                </div>
+                <a class="botao-novo" th:href="@{/eventos/novo}">+ Novo evento</a>
+            </header>
+
+            <section class="painel-cards">
+                <article class="cartao-indicador">
+                    <span>Eventos cadastrados</span>
+                    <strong th:text="${totalEventos}">0</strong>
+                </article>
+                <article class="cartao-indicador">
+                    <span>Participantes</span>
+                    <strong th:text="${totalParticipantes}">0</strong>
+                </article>
+                <article class="cartao-indicador">
+                    <span>Inscrições ativas</span>
+                    <strong th:text="${inscricoesAtivas}">0</strong>
+                    <small>Ocupam vaga neste momento</small>
+                </article>
+                <article class="cartao-indicador">
+                    <span>Total histórico</span>
+                    <strong th:text="${totalInscricoes}">0</strong>
+                    <small>Ativas + canceladas</small>
+                </article>
+            </section>
+
+            <div class="acoes-rapidas">
+                <a class="botao" th:href="@{/eventos}">Ver eventos</a>
+                <a class="botao-secundario" th:href="@{/participantes/novo}">+ Novo participante</a>
+                <a class="botao-secundario" th:href="@{/inscricoes/nova}">+ Nova inscrição</a>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Felipe Alves">
+        <title>Criar conta</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <main class="cadastro-container">
+            <div class="login-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></div>
+            <h1>Criar conta de participante</h1>
+            <p>Preencha seus dados para se inscrever nos eventos.</p>
+            <form th:action="@{/cadastro}" th:object="${cadastro}" method="post">
+                <div class="campo">
+                    <label for="nome">Nome completo</label>
+                    <input id="nome" type="text" th:field="*{nome}" placeholder="Ex.: Ana Souza" required>
+                    <span class="erro" th:errors="*{nome}"></span>
+                </div>
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input id="email" type="email" th:field="*{email}" placeholder="ana@exemplo.com" required>
+                    <span class="erro" th:errors="*{email}"></span>
+                </div>
+                <div class="linha-campos">
+                    <div class="campo">
+                        <label for="telefone">Telefone</label>
+                        <input id="telefone" type="tel" th:field="*{telefone}" placeholder="(00) 00000-0000" required
+                               data-mascara="telefone" maxlength="15" inputmode="numeric" autocomplete="tel">
+                        <span class="erro" th:errors="*{telefone}"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="documento">CPF</label>
+                        <input id="documento" type="text" th:field="*{documento}" placeholder="000.000.000-00" required
+                               data-mascara="cpf" maxlength="14" inputmode="numeric">
+                        <span class="erro" th:errors="*{documento}"></span>
+                    </div>
+                </div>
+                <div class="linha-campos">
+                    <div class="campo">
+                        <label for="senha">Senha</label>
+                        <input id="senha" type="password" th:field="*{senha}" minlength="8" maxlength="72" required>
+                        <span class="erro" th:errors="*{senha}"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="confirmacaoSenha">Confirmar senha</label>
+                        <input id="confirmacaoSenha" type="password" th:field="*{confirmacaoSenha}" required>
+                        <span class="erro" th:errors="*{confirmacaoSenha}"></span>
+                    </div>
+                </div>
+                <button type="submit">Cadastrar participante</button>
+            </form>
+            <p class="link-extra">Já tem conta?
+                <a th:href="@{/login}">Entrar</a>
+            </p>
+        </main>
+        <!--/* ESTUDO: aplica as máscaras nos inputs marcados com data-mascara. */-->
+        <div th:replace="~{fragments/mascaras :: mascaras}"></div>
+    </body>
+</html>

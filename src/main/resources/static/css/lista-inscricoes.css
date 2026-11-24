@@ -1,0 +1,7 @@
+/*
+ * Layout da lista de inscrições. Cores, botões e efeitos: style.css.
+ *
+ * Autor: Felipe Alves
+ */
+.pagina-inscricoes { width: min(1080px, calc(100% - 40px)); }
+table { min-width: 760px; }

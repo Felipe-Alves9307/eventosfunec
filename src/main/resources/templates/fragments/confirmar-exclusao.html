@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Felipe Alves">
+        <title>Popup de confirmação de exclusão</title>
+    </head>
+    <body>
+        <!--
+            Uso (antes de </body>):
+              <div th:replace="~{fragments/confirmar-exclusao :: modal}"></div>
+            Nos formulários de exclusão, troque o onsubmit por:
+              th:data-confirmar="|Excluir ...?|"
+        -->
+        <div th:fragment="modal">
+            <!--/* ESTUDO: <dialog> é a caixa modal nativa do HTML. showModal() escurece o
+                 fundo, prende o foco dentro dela e fecha com Esc, sem biblioteca. */-->
+            <dialog id="modal-confirmar" class="modal-confirmar"
+                    aria-labelledby="modal-titulo" aria-describedby="modal-texto">
+                <div class="modal-caixa">
+                    <div class="modal-icone" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                    </div>
+                    <h2 id="modal-titulo">Confirmar exclusão</h2>
+                    <p id="modal-texto">Tem certeza?</p>
+                    <div class="modal-acoes">
+                        <button type="button" class="botao-secundario" data-modal="cancelar">Cancelar</button>
+                        <button type="button" class="modal-excluir" data-modal="confirmar">Sim, excluir</button>
+                    </div>
+                </div>
+            </dialog>
+            <script>
+                // ESTUDO: função autoexecutável, evita criar variáveis globais.
+                (function () {
+                    var dialogo = document.getElementById('modal-confirmar');
+                    if (!dialogo || typeof dialogo.showModal !== 'function') {
+                        // Sem suporte ao <dialog>: sem popup (o servidor continua protegendo).
+                        return; // navegador antigo: sem popup, o servidor continua protegendo
+                    }
+                    var texto = document.getElementById('modal-texto');
+                    var formPendente = null;
+                    var focoAnterior = null;
+
+                    // 1) Intercepta o envio de qualquer form que tenha data-confirmar.
+                    document.addEventListener('submit', function (ev) {
+                        var form = ev.target;
+                        var mensagem = form.getAttribute('data-confirmar');
+                        if (!mensagem) {
+                            return;
+                        }
+                        ev.preventDefault(); // cancela o envio; guarda o form e abre o popup
+                        formPendente = form;
+                        focoAnterior = document.activeElement;
+                        texto.textContent = mensagem;
+                        dialogo.showModal();
+                    });
+
+                    // 2) Cliques no popup: fundo/Cancelar fecham; "Sim, excluir" envia o form guardado.
+                    dialogo.addEventListener('click', function (ev) {
+                        if (ev.target === dialogo) { // clique no fundo escuro
+                            dialogo.close();
+                            return;
+                        }
+                        var botao = ev.target.closest('[data-modal]');
+                        if (!botao) {
+                            return;
+                        }
+                        if (botao.getAttribute('data-modal') === 'confirmar' && formPendente) {
+                            var form = formPendente;
+                            formPendente = null;
+                            dialogo.close();
+                            form.submit(); // submit() não dispara o evento de novo
+                        } else {
+                            dialogo.close();
+                        }
+                    });
+
+                    // 3) Ao fechar, limpa o form pendente e devolve o foco ao botão de origem.
+                    dialogo.addEventListener('close', function () {
+                        formPendente = null;
+                        if (focoAnterior && typeof focoAnterior.focus === 'function') {
+                            focoAnterior.focus();
+                        }
+                    });
+                })();
+            </script>
+        </div>
+    </body>
+</html>

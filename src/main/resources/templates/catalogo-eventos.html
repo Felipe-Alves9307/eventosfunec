@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Felipe Alves">
+        <title>Catálogo de eventos</title>
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </head>
+    <body>
+        <header th:replace="~{fragments/navbar :: barra('catalogo')}"></header>
+        <main class="pagina-catalogo">
+            <header class="cabecalho">
+                <div>
+                    <p class="eyebrow">Área do participante</p>
+                    <h1>Catálogo de eventos</h1>
+                    <p class="subtitulo">Eventos abertos para inscrição. Escolha um e garanta sua vaga.</p>
+                </div>
+                <a class="botao-secundario" th:href="@{/meus-eventos}">Meus eventos</a>
+            </header>
+
+            <div class="mensagem-erro" th:if="${erro}" th:text="${erro}"></div>
+            <div class="mensagem-sucesso" th:if="${sucesso}" th:text="${sucesso}"></div>
+
+            <section class="grade-eventos" th:unless="${#lists.isEmpty(eventos)}">
+                <article class="cartao-evento" th:each="evento : ${eventos}">
+                    <h2 th:text="${evento.titulo}">Evento</h2>
+                    <p class="descricao" th:text="${evento.descricao}"></p>
+                    <dl class="detalhes">
+                        <dt>Data</dt>
+                        <dd th:text="${#temporals.format(evento.data, 'dd/MM/yyyy')}"></dd>
+                        <dt>Horário</dt>
+                        <dd th:text="${#temporals.format(evento.hora, 'HH:mm')}"></dd>
+                        <dt>Local</dt>
+                        <dd th:text="${evento.local}"></dd>
+                        <dt>Vagas</dt>
+                        <dd th:text="${evento.quantidadeVagas}"></dd>
+                    </dl>
+                    <!-- O formulário NÃO envia o participante: a identidade vem da sessão. -->
+                    <form th:action="@{/inscricoes/minha}" method="post">
+                        <input type="hidden" name="eventoId" th:value="${evento.id}">
+                        <button type="submit">Inscrever-me</button>
+                    </form>
+                </article>
+            </section>
+
+            <section class="estado-vazio" th:if="${#lists.isEmpty(eventos)}">
+                <h2>Nenhum evento aberto no momento</h2>
+                <p>Volte em breve: novos eventos aparecerão aqui.</p>
+                <a class="botao" th:href="@{/meus-eventos}">Ver meus eventos</a>
+            </section>
+        </main>
+    </body>
+</html>

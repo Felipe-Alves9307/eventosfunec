@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- Autor: Felipe Alves -->
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Felipe Alves">
+        <title>Máscaras de CPF e telefone</title>
+    </head>
+    <body>
+        <!--/*
+            ESTUDO. Uso (antes de </body>):
+              <div th:replace="~{fragments/mascaras :: mascaras}"></div>
+            Nos inputs, basta marcar: data-mascara="cpf"  ou  data-mascara="telefone".
+            O script fica aqui dentro (e não em /js) porque o SecurityConfig só libera
+            /css/** sem login, e a página de cadastro é pública.
+        */-->
+        <div th:fragment="mascaras">
+            <script>
+                (function () {
+                    // Mantém só os números e aplica o desenho 000.000.000-00
+                    function mascaraCpf(valor) {
+                        var d = valor.replace(/\D/g, '').slice(0, 11);
+                        if (d.length > 9) { return d.slice(0, 3) + '.' + d.slice(3, 6) + '.' + d.slice(6, 9) + '-' + d.slice(9); }
+                        if (d.length > 6) { return d.slice(0, 3) + '.' + d.slice(3, 6) + '.' + d.slice(6); }
+                        if (d.length > 3) { return d.slice(0, 3) + '.' + d.slice(3); }
+                        return d;
+                    }
+
+                    // (00) 00000-0000 para celular (11 dígitos) ou (00) 0000-0000 para fixo (10)
+                    function mascaraTelefone(valor) {
+                        var d = valor.replace(/\D/g, '').slice(0, 11);
+                        if (d.length > 10) { return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7); }
+                        if (d.length > 6) { return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6); }
+                        if (d.length > 2) { return '(' + d.slice(0, 2) + ') ' + d.slice(2); }
+                        if (d.length > 0) { return '(' + d; }
+                        return '';
+                    }
+
+                    var funcoes = { cpf: mascaraCpf, telefone: mascaraTelefone };
+
+                    document.querySelectorAll('[data-mascara]').forEach(function (campo) {
+                        var aplicar = funcoes[campo.getAttribute('data-mascara')];
+                        if (!aplicar) { return; }
+                        // formata enquanto digita (inclusive ao colar)
+                        campo.addEventListener('input', function () { campo.value = aplicar(campo.value); });
+                        // formata o valor que já veio preenchido (edição ou erro de validação)
+                        campo.value = aplicar(campo.value);
+                    });
+                })();
+            </script>
+        </div>
+    </body>
+</html>
